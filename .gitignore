@@ -1,0 +1,4 @@
+code_env/
+config.py
+*.pyc
+*.swp
