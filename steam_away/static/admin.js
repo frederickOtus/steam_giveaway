@@ -24,12 +24,28 @@ function bindGASelector(){
                 $('select', '#ga-' + newga).val(""+newga);
             }
             oldparent.remove();
-        });//.error(function(){ alert("check with yo dev, this is bad"); });
+        }).error(function(){ alert("check with yo dev, this is bad"); });
     });
 }
 
 function bindGiveawaysAct(){
-    
+   $('#giveaways').on('click', 'button', function(){
+       var curr = $(this).html();
+       var id = $(this).parent().parent().attr('data-id');
+       var button = $(this);
+       button.attr('disabled','');
+       if(curr == 'activate'){
+            $.get('/giveaway/activate/' + id, function(){
+                button.html('deactivate');      
+                button.removeAttr('disabled');
+            });
+       }else{
+            $.get('/giveaway/deactivate', function(){
+                button.html('activate');      
+                button.removeAttr('disabled');
+            });
+       }
+   });
 }
 
 function bindFormActions(){

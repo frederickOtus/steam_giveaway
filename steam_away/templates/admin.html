@@ -45,8 +45,8 @@
     <div id="giveaways">
         <h3>Giveaways</h4>
         {% for ga in giveaways %}
-        <div class='ga keyedit-parent' id='ga-{{ga.id}}' data-id="{{ ga.id }}"> <button>activate</button>
-            <h4>{{ ga.name }}</h4>
+        <div class='ga keyedit-parent' id='ga-{{ga.id}}' data-id="{{ ga.id }}"> 
+            <h4>{{ ga.name }}<button>{% if ga.active %}deactivate{% else %}activate{% endif %}</button></h4>
             <ul>
             {% for key in ga.keys %}
             <li class="bound-key" data-id="{{ key.id }}">

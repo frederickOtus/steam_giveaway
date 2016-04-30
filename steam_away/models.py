@@ -23,10 +23,12 @@ class Giveaway(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
     active = db.Column(db.Boolean)
+    done = db.Column(db.Boolean)
 
     def __init__(self, name):
         self.name = name
         self.active = False
+        self.done = False
 
     def __repr__(self):
         return "<GA: %s>" % self.name
@@ -39,7 +41,7 @@ class Key(db.Model):
     giveaway_id = db.Column(db.Integer, db.ForeignKey('giveaway.id'))
     owner_id = db.Column(db.Integer, db.ForeignKey('person.id'))
     giveaway = db.relationship('Giveaway', backref=db.backref('keys', lazy='dynamic'),)
-    owner = db.relationship('Person', backref=db.backref('loot', lazy='dynamic'))
+    owner = db.relationship('Person', backref=db.backref('loot', lazy='select'))
 
     def __init__(self, name, key):
         self.name = name

@@ -5,13 +5,19 @@ from steam_away import app
 @app.route('/')
 def index():
     giveaway = Giveaway.query.filter_by(active=True).first()
-    return render_template('index.html', username=session['username'], giveaway=giveaway)
+    user = Person.query.filter_by(id=session['uid']).first()
+    if giveaway:
+        ok = Key.query.filter_by(giveaway_id=giveaway.id, owner_id=user.id).all()
+        owned = len(ok) > 0
+    else:
+        owned = False
+    return render_template('index.html', user=user, giveaway=giveaway, owned=owned)
 
 @app.route('/admin')
 def admin():
     if session['admin']:
         keys = Key.query.filter_by(giveaway_id=None)
-        giveaways = Giveaway.query.filter_by(active=False)
+        giveaways = Giveaway.query.filter_by(done=False)
         return render_template('admin.html', 
                 keys=keys, giveaways=giveaways, username=session['username'])
     else:
@@ -62,9 +68,25 @@ def activate_giveaway(ga_id):
     return ""
 
 @app.route('/giveaway/deactivate')
-def deactivate_giveaway(ga_id):
+def deactivate_giveaway():
     ga = Giveaway.query.filter_by(active=True).first()
     if not ga is None:
-        ga.active = True
+        ga.active = False
         db.session.commit()
     return ""
+
+@app.route('/key/choose/<kid>')
+def choose_key(kid):
+    key = Key.query.filter_by(id=kid).first_or_404()
+    if key.giveaway is None or not key.giveaway.active:
+        return "toss off cheater", 400
+    has_key = Key.query.filter_by(owner_id=session['uid'], giveaway_id=key.giveaway.id).all()
+    if len(has_key) > 0:
+        return "toss off cheater", 400
+    key.owner_id = session['uid']
+    db.session.commit()
+    left = Key.query.filter_by(giveaway_id=key.giveaway.id, owner_id=None).all()
+    if len(left) == 0:
+        key.giveaway.done = True
+        db.session.commit()
+    return json.dumps({'key':key.key})

@@ -9,7 +9,7 @@ import json
 
 @app.before_request
 def enforce_login():
-    if not request.endpoint in ['login','authorized']:
+    if not request.endpoint in ['login','logout']:
         if not session.get('credentials'):
             return redirect(url_for('login'))
         credentials = client.OAuth2Credentials.from_json(session['credentials'])
@@ -34,6 +34,7 @@ def enforce_login():
                 print('user found!')
                 user = userq.first()
 
+            session['uid'] = user.id
             session['username'] = profile['displayName']
             session['admin'] = user.admin
 
@@ -57,3 +58,7 @@ def login():
         auth_uri = flow.step1_get_authorize_url()
         return redirect(auth_uri)
     
+@app.route('/logout')
+def logout():
+    session.clear()
+    return "BAI!"
