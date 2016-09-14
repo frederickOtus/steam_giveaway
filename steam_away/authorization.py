@@ -43,7 +43,7 @@ def login():
     flow = client.flow_from_clientsecrets(
         'steam_away/client_secret.json',
         scope='https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email',
-        redirect_uri='http://localhost:5000/login',
+        redirect_uri='http://mc.goshen.edu:8000/login',
     )
 
     err = request.args.get('error')

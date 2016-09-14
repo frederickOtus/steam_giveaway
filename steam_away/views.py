@@ -1,4 +1,5 @@
 from flask import *
+from sqlalchemy import desc
 from steam_away.models import *
 from steam_away import app
 
@@ -16,7 +17,7 @@ def index():
 @app.route('/admin')
 def admin():
     if session['admin']:
-        keys = Key.query.filter_by(giveaway_id=None)
+        keys = Key.query.filter_by(giveaway_id=None).order_by(desc(Key.name))
         giveaways = Giveaway.query.filter_by(done=False)
         return render_template('admin.html', 
                 keys=keys, giveaways=giveaways, username=session['username'])
