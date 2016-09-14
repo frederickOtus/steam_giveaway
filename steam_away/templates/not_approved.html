@@ -1,0 +1,27 @@
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="static/style.css">
+</head>
+<body>
+
+    <p>
+        Hello {{ user.name }}! 
+        Welcome to my dumb little webapp for giving away steam games. There will be periodic giveaways posted here. For each giveaway, you can swipe _one_ key for steam (as well as peek at what everyone else got). Feel free to complain about getting free games at me (pita.da.bread07@gmail.com)
+    </p>
+    <p>
+        Unfortunately, due to rampant abuse of the system by randos, I've implemented a whitelisting system. You are seeing this message because you have not been whitelisted yet. I don't always remember to whitelist users, so maybe fire me an email and I'll get on that.
+    </p>
+
+    <div>
+        <h3>Your Keys!</h3>
+        {% if user.loot|length == 0 %}
+        （；へ；）
+        {% endif %}
+        <ul>
+            {% for key in user.loot %}
+            <li>{{ key.key }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>

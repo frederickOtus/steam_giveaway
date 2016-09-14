@@ -1,0 +1,15 @@
+<html>
+<head>
+    <script src="/static/jquery.js"></script>
+    <script src="/static/whitelist.js"></script>
+</head>
+<body>
+    <div>
+        <ul>
+            {% for user in users %}
+            <li>{{ user.name }} -- {{ user.num_loot() }} -- <button class='toggle' data-id='{{ user.id }}'>{% if user.approved %}Blacklist{% else %}Whitelist{% endif %}</button></li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>

@@ -12,6 +12,8 @@ def index():
         owned = len(ok) > 0
     else:
         owned = False
+    if not user.approved:
+        return render_template('not_approved.html', user=user)
     return render_template('index.html', user=user, giveaway=giveaway, owned=owned)
 
 @app.route('/admin')
@@ -24,9 +26,19 @@ def admin():
     else:
         return redirect(url_for('index'))
 
+@app.route('/whitelist')
+def whitelist():
+    if session['admin']:
+        users = Person.query.order_by('approved').all()
+        return render_template('whitelist.html', users=users, username=session['username'])
+    else:
+        return redirect(url_for('index'))
+
 # ajax routes
 @app.route('/key/add/<name>/<key>')
 def add_key(name, key):
+    if not session['admin']:
+        abort(404)
     if len(name) == 0 or len(key) == 0:
         return json.dumps({"error": "cant have empty vals"}), 400
     if Key.query.filter_by(key=key).count() == 0:
@@ -40,6 +52,8 @@ def add_key(name, key):
 
 @app.route('/key/set_giveaway/<key_id>/<ga_id>')
 def set_key_giveaway(key_id, ga_id):
+    if not session['admin']:
+        abort(404)
     key = Key.query.filter_by(id=key_id).first_or_404()
     if int(ga_id) == 0:
         giveaway = None
@@ -51,6 +65,8 @@ def set_key_giveaway(key_id, ga_id):
 
 @app.route('/giveaway/add/<name>')
 def add_giveaway(name):
+    if not session['admin']:
+        abort(404)
     if len(name) == 0:
         return json.dumps({'error':'cant have empty name'}),400
     ga = Giveaway(name)
@@ -60,6 +76,8 @@ def add_giveaway(name):
 
 @app.route('/giveaway/activate/<ga_id>')
 def activate_giveaway(ga_id):
+    if not session['admin']:
+        abort(404)
     g = Giveaway.query.filter_by(id=ga_id).first_or_404()
     gas = Giveaway.query.filter_by(active=True)
     for ga in gas:
@@ -70,11 +88,22 @@ def activate_giveaway(ga_id):
 
 @app.route('/giveaway/deactivate')
 def deactivate_giveaway():
+    if not session['admin']:
+        abort(404)
     ga = Giveaway.query.filter_by(active=True).first()
     if not ga is None:
         ga.active = False
         db.session.commit()
     return ""
+
+@app.route('/wl-toggle/<uid>')
+def whitelist_tg(uid):
+    if not session['admin']:
+        abort(404)
+    person = Person.query.filter_by(id=uid).first_or_404()
+    person.approved = not person.approved
+    db.session.commit()
+    return json.dumps({'status':person.approved})
 
 @app.route('/key/choose/<kid>')
 def choose_key(kid):

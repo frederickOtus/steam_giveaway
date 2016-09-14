@@ -7,6 +7,10 @@ class Person(db.Model):
     name = db.Column(db.String)
     visits = db.Column(db.Integer)
     oauth_id = db.Column(db.String)
+    approved = db.Column(db.Boolean, default=0)
+
+    def num_loot(self):
+        return len(self.loot)
 
     def __init__(self, name, oauth_id, admin=False):
         self.admin = admin
