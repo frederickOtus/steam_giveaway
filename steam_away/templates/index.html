@@ -5,40 +5,47 @@
     <link rel="stylesheet" type="text/css" href="static/style.css">
 </head>
 <body>
-
-    <p>
-        Hello {{ user.name }}! 
-        Welcome to my dumb little webapp for giving away steam games. There will be periodic giveaways posted here. For each giveaway, you can swipe _one_ key for steam (as well as peek at what everyone else got). Feel free to complain about getting free games at me (pita.da.bread07@gmail.com)
-    </p>
-    <div>
-    {% if giveaway %}
-    <h3>The '{{ giveaway.name }}' Giveaway!</h3>
-        <ul id="the-keys">
-        {% for key in giveaway.keys %}
-            {% if key.owner and key.owner_id != user.id %}
-            <li class='claimed'>{{ key.name }} -- {{ key.owner.name }}</li>    
-            {% elif key.owner and key.owner_id == user.id %}
-            <li class='owned'>{{ key.key }} -- It's for you!</li>    
-            {% elif not owned %}
-            <li class='maybe' data-id='{{key.id}}'>Click here for key!</li>
+    <div id="main-content">
+        <section id="mesg">
+            <h2>Welcome!</h2>
+            <p>
+                Hello {{ user.name }}! 
+                Welcome to my dumb little webapp for giving away steam games. There will be periodic giveaways posted here. For each giveaway, you can swipe _one_ key for steam (as well as peek at what everyone else got). Feel free to complain about getting free games at me (pita.da.bread07@gmail.com)
+            </p>
+        </section>
+        <section id="give-away">
+            <div>
+            {% if giveaway %}
+            <h3>The '{{ giveaway.name }}' Giveaway!</h3>
+                <ul id="the-keys">
+                {% for key in giveaway.keys %}
+                    {% if key.owner and key.owner_id != user.id %}
+                    <li class='claimed'>{{ key.name }} -- {{ key.owner.name }}</li>    
+                    {% elif key.owner and key.owner_id == user.id %}
+                    <li class='owned'>{{ key.key }} -- It's for you!</li>    
+                    {% elif not owned %}
+                    <li class='maybe' data-id='{{key.id}}'>Click here for key!</li>
+                    {% endif %}
+                {% endfor %} 
+                </ul>
+            {% else %}
+                No current giveaways, sorry, comeback later!
             {% endif %}
-        {% endfor %} 
-        </ul>
-    {% else %}
-        No current giveaways, sorry, comeback later!
-    {% endif %}
-    </div>
-
-    <div>
-        <h3>Your Keys!</h3>
-        {% if user.loot|length == 0 %}
-        （；へ；）
-        {% endif %}
-        <ul>
-            {% for key in user.loot %}
-            <li>{{ key.key }}</li>
-            {% endfor %}
-        </ul>
+            </div>
+        </section>
+        <section id="keys">
+            <div>
+                <h3>Your Keys!</h3>
+                {% if user.loot|length == 0 %}
+                （；へ；）
+                {% endif %}
+                <ul>
+                    {% for key in user.loot %}
+                    <li>{{ key.key }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </section>
     </div>
 </body>
 </html>

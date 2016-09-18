@@ -29,7 +29,7 @@ def admin():
 @app.route('/whitelist')
 def whitelist():
     if session['admin']:
-        users = Person.query.order_by('approved').all()
+        users = Person.query.order_by(Person.approved, desc(Person.id)).all()
         return render_template('whitelist.html', users=users, username=session['username'])
     else:
         return redirect(url_for('index'))

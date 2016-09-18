@@ -1,0 +1,21 @@
+body{
+    font-family: "Nitti Grotesk",Helvetica,Arial,sans-serif;
+}
+
+p{
+    width: 55em;
+    line-height: 1.6em;
+}
+
+ul{
+    line-height: 1.6em;
+}
+
+section{
+    margin-bottom: 5em;
+}
+#main-content{
+    margin: auto;
+    width: 50%;
+    padding-top: 10em;
+}
